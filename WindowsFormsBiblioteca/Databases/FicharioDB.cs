@@ -76,8 +76,8 @@ namespace WindowsFormsBiblioteca.Databases
                     mensagem = "Identificador não existe: " + Id;
                 }
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 status = false;
                 mensagem = "Erro ao buscar o conteúdo do identificador: " + ex.Message;
             }
@@ -114,8 +114,8 @@ namespace WindowsFormsBiblioteca.Databases
                     mensagem = "Não existe clientes na base de dados.";
                 }
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 status = false;
                 mensagem = "Erro ao buscar o conteúdo do identificador: " + ex.Message;
             }
@@ -129,7 +129,7 @@ namespace WindowsFormsBiblioteca.Databases
 
             try
             {
-                var SQL = "SELECT Id, JSON FROM " + tabela  + " WHERE Id = '" + Id + "'";
+                var SQL = "SELECT Id, JSON FROM " + tabela + " WHERE Id = '" + Id + "'";
                 var dt = db.SQLQuery(SQL);
 
                 if (dt.Rows.Count > 0)
@@ -147,10 +147,10 @@ namespace WindowsFormsBiblioteca.Databases
                     status = false;
                     mensagem = "Exclusão não permitida porque o identificador não existe: " + Id;
                 }
-                
+
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 status = false;
                 mensagem = "Conexão com o Fichario com erro: " + ex.Message;
             }
@@ -165,7 +165,7 @@ namespace WindowsFormsBiblioteca.Databases
                 var SQL = "SELECT Id, JSON FROM '" + tabela + " WHERE Id = '" + Id + "'";
                 var dt = db.SQLQuery(SQL);
 
-                if (dt.Rows.Count > 0) 
+                if (dt.Rows.Count > 0)
                 {
                     // UPDATE CLIENTE SET JSON = '{...}' WHERE ID = '000010'
 
@@ -181,10 +181,11 @@ namespace WindowsFormsBiblioteca.Databases
                     mensagem = "Alteração não permitida porque o identificador não existe: " + Id;
                 }
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 status = false;
                 mensagem = "Conexão com o Fichario com erro: " + ex.Message;
             }
+        }
     }
 }
