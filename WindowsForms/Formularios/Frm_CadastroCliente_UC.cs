@@ -17,7 +17,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace WindowsForms.Formularios
 {
-    public partial class Frm_CadastroCliente_UC: UserControl
+    public partial class Frm_CadastroCliente_UC : UserControl
     {
         public Frm_CadastroCliente_UC()
         {
@@ -104,7 +104,7 @@ namespace WindowsForms.Formularios
                 C = LeituraFormulario();
                 C.ValidaClasse();
                 C.ValidaComplemento();
-                C.IncluirFichario("../../../Fichario");
+                C.IncluirFicharioDB("Cliente");
                 MessageBox.Show("OK: Identificador incluido com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ValidationException Ex)
@@ -128,7 +128,7 @@ namespace WindowsForms.Formularios
                 try
                 {
                     Cliente.Unit C = new Cliente.Unit();
-                    C = C.BuscarFichario(Txt_Codigo.Text, "../../../Fichario");
+                    C = C.BuscarFicharioDB(Txt_Codigo.Text, "Cliente");
 
                     if (C == null)
                     {
@@ -139,7 +139,7 @@ namespace WindowsForms.Formularios
                         EscreveFormulario(C);
                     }
                 }
-                catch(Exception Ex)
+                catch (Exception Ex)
                 {
                     MessageBox.Show(Ex.Message, "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -160,7 +160,7 @@ namespace WindowsForms.Formularios
                     C = LeituraFormulario();
                     C.ValidaClasse();
                     C.ValidaComplemento();
-                    C.AlterarFichario("../../../Fichario");
+                    C.AlterarFicharioDB("Cliente");
                     MessageBox.Show("OK: Identificador alterado com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (ValidationException Ex)
@@ -180,14 +180,14 @@ namespace WindowsForms.Formularios
             {
                 MessageBox.Show("Código do Cliente vazio.", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            else 
+            else
             {
                 try
                 {
                     Cliente.Unit C = new Cliente.Unit();
-                    C = C.BuscarFichario(Txt_Codigo.Text, "../../../Fichario");
+                    C = C.BuscarFicharioDB(Txt_Codigo.Text, "Cliente");
 
-                    if(C == null)
+                    if (C == null)
                     {
                         MessageBox.Show("Identificador não encontrado.", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -200,14 +200,14 @@ namespace WindowsForms.Formularios
 
                         if (Db.DialogResult == DialogResult.Yes)
                         {
-                            C.ApagarFichario("../../../Fichario");
+                            C.ApagarFicharioDB("Cliente");
 
                             MessageBox.Show("OK: Identificador apagado com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             LimparFormulario();
                         }
                     }
                 }
-                catch(Exception Ex)
+                catch (Exception Ex)
                 {
                     MessageBox.Show(Ex.Message, "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -240,12 +240,12 @@ namespace WindowsForms.Formularios
             {
                 C.Genero = 0;
             }
-            
+
             if (Rdb_Feminino.Checked)
             {
                 C.Genero = 1;
             }
-            
+
             if (Rdb_Indefinido.Checked)
             {
                 C.Genero = 2;
@@ -309,7 +309,7 @@ namespace WindowsForms.Formularios
 
                         Cmb_Estados.SelectedIndex = -1;
 
-                        for (int i = 0; i < Cmb_Estados.Items.Count - 1; i++)
+                        for (int i = 0; i <= Cmb_Estados.Items.Count - 1; i++)
                         {
                             var vPos = Strings.InStr(Cmb_Estados.Items[i].ToString(), "(" + CEP.uf + ")");
 
@@ -404,45 +404,34 @@ namespace WindowsForms.Formularios
 
         private void Btn_Busca_Click(object sender, EventArgs e)
         {
-            Fichario F = new Fichario("../../../Fichario");
 
-            if (F.status)
+            try
             {
-                List<string> List = new List<string>();
-                List = F.BuscarTodos();
+                Cliente.Unit C = new Cliente.Unit();
 
-                if (F.status)
+                var ListaBusca = C.BuscarFicharioDBTodosDB("Cliente");
+                Frm_Busca FForm = new Frm_Busca(ListaBusca);
+                FForm.ShowDialog();
+
+                if (FForm.DialogResult == DialogResult.OK)
                 {
-                    List<List<string>> ListaBusca = new List<List<string>>();
+                    var idSelect = FForm.idSelect;
 
-                    for (int i = 0; i <= List.Count - 1; i++)
+                    C = C.BuscarFicharioDB(idSelect, "Cliente");
+
+                    if (C == null)
                     {
-                        Cliente.Unit C = Cliente.DesSerializedClassUnit(List[i]);
-                        ListaBusca.Add(new List<string> { C.Id, C.Nome });
+                        MessageBox.Show("Identificador não encontrado.", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-
-                    Frm_Busca FForm = new Frm_Busca(ListaBusca);
-                    FForm.ShowDialog();
-
-                    if (FForm.DialogResult == DialogResult.OK)
+                    else
                     {
-                        var idSelect = FForm.idSelect;
-                        string clienteJson = F.Buscar(idSelect);
-
-                        Cliente.Unit C = new Cliente.Unit();
-                        C = Cliente.DesSerializedClassUnit(clienteJson);
-
                         EscreveFormulario(C);
                     }
                 }
-                else
-                {
-                    MessageBox.Show("ERR " + F.mensagem, "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
             }
-            else
+            catch (Exception Ex)
             {
-                MessageBox.Show("ERR " + F.mensagem, "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Ex.Message, "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

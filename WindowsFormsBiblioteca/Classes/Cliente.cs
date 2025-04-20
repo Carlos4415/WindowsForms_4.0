@@ -117,10 +117,12 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            public void IncluirFichario(string Conexao)
+            #region "CRUD do FicharioDB Local DB"
+
+            public void IncluirFicharioDB(string Conexao)
             {
                 string clienteJson = Cliente.SerializedClassUnit(this);
-                Fichario F = new Fichario(Conexao);
+                FicharioDB F = new FicharioDB(Conexao);
 
                 if (F.status)
                 {
@@ -137,9 +139,9 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            public Unit BuscarFichario(string id, string conexao)
+            public Unit BuscarFicharioDB(string id, string conexao)
             {
-                Fichario F = new Fichario(conexao);
+                FicharioDB F = new FicharioDB(conexao);
 
                 if (F.status)
                 {
@@ -153,10 +155,10 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            public void AlterarFichario(string conexao)
+            public void AlterarFicharioDB(string conexao)
             {
                 string clienteJson = Cliente.SerializedClassUnit(this);
-                Fichario F = new Fichario(conexao);
+                FicharioDB F = new FicharioDB(conexao);
 
                 if (F.status)
                 {
@@ -173,9 +175,9 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            public void ApagarFichario(string conexao)
+            public void ApagarFicharioDB(string conexao)
             {
-                Fichario F = new Fichario(conexao);
+                FicharioDB F = new FicharioDB(conexao);
 
                 if (F.status)
                 {
@@ -191,6 +193,39 @@ namespace WindowsFormsBiblioteca.Classes
                     throw new Exception(F.mensagem);
                 }
             }
+            public List<List<string>> BuscarFicharioDBTodosDB(string conexao)
+            {
+                FicharioDB F = new FicharioDB(conexao);
+
+                if (F.status)
+                {
+                    List<string> List = new List<string>();
+                    List = F.BuscarTodos();
+
+                    if (F.status)
+                    {
+                        List<List<string>> ListaBusca = new List<List<string>>();
+
+                        for (int i = 0; i <= List.Count - 1; i++)
+                        {
+                            Cliente.Unit C = Cliente.DesSerializedClassUnit(List[i]);
+                            ListaBusca.Add(new List<string> { C.Id, C.Nome });
+                        }
+
+                        return ListaBusca;
+                    }
+                    else
+                    {
+                        throw new Exception(F.mensagem);
+                    }
+                }
+                else
+                {
+                    throw new Exception(F.mensagem);
+                }
+            }
+
+            #endregion
         }
 
         public class List

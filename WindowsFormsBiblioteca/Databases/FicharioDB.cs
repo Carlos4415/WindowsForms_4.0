@@ -99,7 +99,7 @@ namespace WindowsFormsBiblioteca.Databases
 
                 if (dt.Rows.Count > 0)
                 {
-                    for (int i = 0; i < dt.Rows.Count - 1; i++)
+                    for (int i = 0; i <= dt.Rows.Count - 1; i++)
                     {
                         string conteudo = dt.Rows[i]["JSON"].ToString();
 
@@ -136,7 +136,7 @@ namespace WindowsFormsBiblioteca.Databases
                 {
                     // DELETE FROM CLIENTE WHERE ID = '000010'
 
-                    SQL = "DELETE FROM '" + tabela + "' WHERE Id = '" + Id + "'";
+                    SQL = "DELETE FROM " + tabela + " WHERE Id = '" + Id + "'";
                     db.SQLCommand(SQL);
 
                     status = true;
@@ -162,14 +162,14 @@ namespace WindowsFormsBiblioteca.Databases
 
             try
             {
-                var SQL = "SELECT Id, JSON FROM '" + tabela + " WHERE Id = '" + Id + "'";
+                var SQL = "SELECT Id, JSON FROM " + tabela + " WHERE Id = '" + Id + "'";
                 var dt = db.SQLQuery(SQL);
 
                 if (dt.Rows.Count > 0)
                 {
                     // UPDATE CLIENTE SET JSON = '{...}' WHERE ID = '000010'
 
-                    SQL = "UPDATE '" + tabela + "' SET JSON = '" + jsonUnit + "' WHERE Id = '" + Id + "'";
+                    SQL = "UPDATE " + tabela + " SET JSON = '" + jsonUnit + "' WHERE Id = '" + Id + "'";
                     db.SQLCommand(SQL);
 
                     status = true;
