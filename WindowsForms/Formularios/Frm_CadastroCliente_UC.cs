@@ -104,7 +104,7 @@ namespace WindowsForms.Formularios
                 C = LeituraFormulario();
                 C.ValidaClasse();
                 C.ValidaComplemento();
-                C.IncluirFicharioDB("Cliente");
+                C.IncluirFicharioSQL("Cliente");
                 MessageBox.Show("OK: Identificador incluido com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ValidationException Ex)
@@ -128,7 +128,7 @@ namespace WindowsForms.Formularios
                 try
                 {
                     Cliente.Unit C = new Cliente.Unit();
-                    C = C.BuscarFicharioDB(Txt_Codigo.Text, "Cliente");
+                    C = C.BuscarFicharioSQL(Txt_Codigo.Text, "Cliente");
 
                     if (C == null)
                     {
@@ -160,7 +160,7 @@ namespace WindowsForms.Formularios
                     C = LeituraFormulario();
                     C.ValidaClasse();
                     C.ValidaComplemento();
-                    C.AlterarFicharioDB("Cliente");
+                    C.AlterarFicharioSQL("Cliente");
                     MessageBox.Show("OK: Identificador alterado com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (ValidationException Ex)
@@ -185,7 +185,7 @@ namespace WindowsForms.Formularios
                 try
                 {
                     Cliente.Unit C = new Cliente.Unit();
-                    C = C.BuscarFicharioDB(Txt_Codigo.Text, "Cliente");
+                    C = C.BuscarFicharioSQL(Txt_Codigo.Text, "Cliente");
 
                     if (C == null)
                     {
@@ -200,7 +200,7 @@ namespace WindowsForms.Formularios
 
                         if (Db.DialogResult == DialogResult.Yes)
                         {
-                            C.ApagarFicharioDB("Cliente");
+                            C.ApagarFicharioSQL("Cliente");
 
                             MessageBox.Show("OK: Identificador apagado com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             LimparFormulario();
@@ -409,7 +409,7 @@ namespace WindowsForms.Formularios
             {
                 Cliente.Unit C = new Cliente.Unit();
 
-                var ListaBusca = C.BuscarFicharioDBTodosDB("Cliente");
+                var ListaBusca = C.BuscarFicharioDBTodosSQL("Cliente");
                 Frm_Busca FForm = new Frm_Busca(ListaBusca);
                 FForm.ShowDialog();
 
@@ -417,7 +417,7 @@ namespace WindowsForms.Formularios
                 {
                     var idSelect = FForm.idSelect;
 
-                    C = C.BuscarFicharioDB(idSelect, "Cliente");
+                    C = C.BuscarFicharioSQL(idSelect, "Cliente");
 
                     if (C == null)
                     {

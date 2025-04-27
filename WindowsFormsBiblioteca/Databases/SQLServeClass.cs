@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -8,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace WindowsFormsBiblioteca.Databases
 {
-    public class LocalDBClass
+    public class SQLServeClass
     {
         public string stringConn;
         public SqlConnection connDB;
 
-        public LocalDBClass() 
-        { 
+        public SQLServeClass()
+        {
             try
             {
-                stringConn = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\carlo\\source\\repos\\WindowsForms_3.0\\WindowsFormsBiblioteca\\Databases\\Fichario.mdf;Integrated Security=True";
+                stringConn = ConfigurationManager.ConnectionStrings["Fichario"].ConnectionString;
                 connDB = new SqlConnection(stringConn);
                 connDB.Open();
             }
@@ -47,7 +48,7 @@ namespace WindowsFormsBiblioteca.Databases
             return dt;
         }
 
-        public string SQLCommand(string SQL) 
+        public string SQLCommand(string SQL)
         {
             try
             {

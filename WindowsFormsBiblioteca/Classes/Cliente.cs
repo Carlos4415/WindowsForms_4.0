@@ -117,12 +117,12 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            #region "CRUD do FicharioDB Local DB"
+            #region "CRUD do Fichario DB SQL Server"
 
-            public void IncluirFicharioDB(string Conexao)
+            public void IncluirFicharioSQL(string Conexao)
             {
                 string clienteJson = Cliente.SerializedClassUnit(this);
-                FicharioDB F = new FicharioDB(Conexao);
+                FicharioSQLServer F = new FicharioSQLServer(Conexao);
 
                 if (F.status)
                 {
@@ -139,9 +139,9 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            public Unit BuscarFicharioDB(string id, string conexao)
+            public Unit BuscarFicharioSQL(string id, string conexao)
             {
-                FicharioDB F = new FicharioDB(conexao);
+                FicharioSQLServer F = new FicharioSQLServer(conexao);
 
                 if (F.status)
                 {
@@ -155,10 +155,10 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            public void AlterarFicharioDB(string conexao)
+            public void AlterarFicharioSQL(string conexao)
             {
                 string clienteJson = Cliente.SerializedClassUnit(this);
-                FicharioDB F = new FicharioDB(conexao);
+                FicharioSQLServer F = new FicharioSQLServer(conexao);
 
                 if (F.status)
                 {
@@ -175,9 +175,9 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            public void ApagarFicharioDB(string conexao)
+            public void ApagarFicharioSQL(string conexao)
             {
-                FicharioDB F = new FicharioDB(conexao);
+                FicharioSQLServer F = new FicharioSQLServer(conexao);
 
                 if (F.status)
                 {
@@ -193,9 +193,9 @@ namespace WindowsFormsBiblioteca.Classes
                     throw new Exception(F.mensagem);
                 }
             }
-            public List<List<string>> BuscarFicharioDBTodosDB(string conexao)
+            public List<List<string>> BuscarFicharioDBTodosSQL(string conexao)
             {
-                FicharioDB F = new FicharioDB(conexao);
+                FicharioSQLServer F = new FicharioSQLServer(conexao);
 
                 if (F.status)
                 {
