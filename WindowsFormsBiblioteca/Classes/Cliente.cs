@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using WindowsFormsBiblioteca.Databases;
+using System.Data;
 
 namespace WindowsFormsBiblioteca.Classes
 {
@@ -117,7 +118,109 @@ namespace WindowsFormsBiblioteca.Classes
                 }
             }
 
-            #region "CRUD do Fichario DB SQL Server"
+            #region "CRUD do Fichario DB SQL Server Relacional"
+
+            #region "Funções auxiliares"
+
+            public string ToInsert()
+            {
+                string SQL;
+
+                SQL = @"
+                    INSERT INTO TB_Cliente
+                    (
+                        Id,
+                        Nome,
+                        NomePai,
+                        NomeMae,
+                        NaoTemPai,
+                        Cpf,
+                        Genero,
+                        Cep,
+                        Logradouro,
+                        Complemento,
+                        Bairro,
+                        Cidade,
+                        Estado,
+                        Telefone,
+                        Profissao,
+                        RendaFamiliar
+                    )
+                    VALUES
+                    (";
+                SQL += "'" + this.Id + "', ";
+                SQL += "'" + this.Nome + "', ";
+                SQL += "'" + this.NomePai + "', ";
+                SQL += "'" + this.NomeMae + "', ";
+                SQL += Convert.ToString(this.NaoTemPai) + ",";
+                SQL += "'" + this.Cpf + "', ";
+                SQL += Convert.ToString(this.Genero) + ",";
+                SQL += "'" + this.Cep + "', ";
+                SQL += "'" + this.Logradouro + "', ";
+                SQL += "'" + this.Complemento + "', ";
+                SQL += "'" + this.Bairro + "', ";
+                SQL += "'" + this.Cidade + "', ";
+                SQL += "'" + this.Estado + "', ";
+                SQL += "'" + this.Telefone + "', ";
+                SQL += "'" + this.Profissao + "', ";
+                SQL += Convert.ToString(this.RendaFamiliar);
+                SQL += ");";
+
+                return SQL;
+            }
+
+            public string ToUpdate(string Id)
+            {
+                string SQL;
+
+                SQL = @"UPDATE TB_Cliente
+                        SET";
+                SQL += "Id = '" + this.Id + "', ";
+                SQL += "Nome = '" + this.Nome + "', ";
+                SQL += "NomePai = '" + this.NomePai + "', ";
+                SQL += "NomeMae = '" + this.NomeMae + "', ";
+                SQL += "NaoTemPai = " + Convert.ToString(this.NaoTemPai) + ",";
+                SQL += "Cpf = '" + this.Cpf + "', ";
+                SQL += "Genero = " + Convert.ToString(this.Genero) + "'";
+                SQL += "Cep = '" + this.Cep + "', ";
+                SQL += "Logradouro = '" + this.Logradouro + "', ";
+                SQL += "Complemento = '" + this.Complemento + "', ";
+                SQL += "Bairro = '" + this.Bairro + "', ";
+                SQL += "Cidade = '" + this.Cidade + "', ";
+                SQL += "Estado = '" + this.Estado + "', ";
+                SQL += "Telefone = '" + this.Telefone + "', ";
+                SQL += "Profissao = '" + this.Profissao + "', ";
+                SQL += "RendaFamiliar = " + Convert.ToDouble(this.RendaFamiliar);
+                SQL += "WHERE Id = '" + this.Id + "';";
+
+                return SQL;
+            }
+
+            public Unit DataRowToUnit(DataRow dr)
+            {
+                Unit u = new Unit();
+
+                u.Id = dr["Id"].ToString();
+                u.Nome = dr["Nome"].ToString();
+                u.NomePai = dr["NomePai"].ToString();
+                u.NomeMae = dr["NomeMae"].ToString();
+                u.NaoTemPai = Convert.ToBoolean(dr["NaoTemPai"]);
+                u.Cpf = dr["Cpf"].ToString();
+                u.Genero = Convert.ToInt32(dr["Genero"]);
+                u.Cep = dr["Cep"].ToString();
+                u.Logradouro = dr["Logradouro"].ToString();
+                u.Complemento = dr["Complemento"].ToString();
+                u.Bairro = dr["Bairro"].ToString();
+                u.Cidade = dr["Cidade"].ToString();
+                u.Estado = dr["Estado"].ToString();
+                u.Telefone = dr["Telefone"].ToString();
+                u.Profissao = dr["Profissao"].ToString();
+                u.RendaFamiliar = Convert.ToDouble(dr["RendaFamiliar"]);
+
+                return u;
+            }
+
+            #endregion
 
             public void IncluirFicharioSQL(string Conexao)
             {
