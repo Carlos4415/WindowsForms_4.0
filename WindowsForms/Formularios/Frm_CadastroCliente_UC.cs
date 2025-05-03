@@ -104,7 +104,7 @@ namespace WindowsForms.Formularios
                 C = LeituraFormulario();
                 C.ValidaClasse();
                 C.ValidaComplemento();
-                C.IncluirFicharioSQL("Cliente");
+                C.IncluirFicharioSQLREL();
                 MessageBox.Show("OK: Identificador incluido com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ValidationException Ex)
@@ -128,7 +128,7 @@ namespace WindowsForms.Formularios
                 try
                 {
                     Cliente.Unit C = new Cliente.Unit();
-                    C = C.BuscarFicharioSQL(Txt_Codigo.Text, "Cliente");
+                    C = C.BuscarFicharioSQLREL(Txt_Codigo.Text);
 
                     if (C == null)
                     {
@@ -160,7 +160,7 @@ namespace WindowsForms.Formularios
                     C = LeituraFormulario();
                     C.ValidaClasse();
                     C.ValidaComplemento();
-                    C.AlterarFicharioSQL("Cliente");
+                    C.AlterarFicharioSQLREL();
                     MessageBox.Show("OK: Identificador alterado com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (ValidationException Ex)
@@ -185,7 +185,7 @@ namespace WindowsForms.Formularios
                 try
                 {
                     Cliente.Unit C = new Cliente.Unit();
-                    C = C.BuscarFicharioSQL(Txt_Codigo.Text, "Cliente");
+                    C = C.BuscarFicharioSQLREL(Txt_Codigo.Text);
 
                     if (C == null)
                     {
@@ -200,7 +200,7 @@ namespace WindowsForms.Formularios
 
                         if (Db.DialogResult == DialogResult.Yes)
                         {
-                            C.ApagarFicharioSQL("Cliente");
+                            C.ApagarFicharioSQLREL("Cliente");
 
                             MessageBox.Show("OK: Identificador apagado com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             LimparFormulario();
@@ -229,11 +229,11 @@ namespace WindowsForms.Formularios
 
             if (Chk_TemPai.Checked)
             {
-                C.NaoTemPai = true;
+                C.NaoTemPai = 1;
             }
             else
             {
-                C.NaoTemPai = false;
+                C.NaoTemPai = 0;
             }
 
             if (Rdb_Masculino.Checked)
@@ -349,7 +349,7 @@ namespace WindowsForms.Formularios
             Txt_NomeCliente.Text = C.Nome;
             Txt_NomeMae.Text = C.NomeMae;
 
-            if (C.NaoTemPai == true)
+            if (C.NaoTemPai == 1)
             {
                 Chk_TemPai.Checked = true;
                 Txt_NomePai.Text = "";
@@ -409,7 +409,7 @@ namespace WindowsForms.Formularios
             {
                 Cliente.Unit C = new Cliente.Unit();
 
-                var ListaBusca = C.BuscarFicharioDBTodosSQL("Cliente");
+                var ListaBusca = C.BuscarFicharioDBTodosSQLREL("Cliente");
                 Frm_Busca FForm = new Frm_Busca(ListaBusca);
                 FForm.ShowDialog();
 
@@ -417,7 +417,7 @@ namespace WindowsForms.Formularios
                 {
                     var idSelect = FForm.idSelect;
 
-                    C = C.BuscarFicharioSQL(idSelect, "Cliente");
+                    C = C.BuscarFicharioSQLREL(idSelect);
 
                     if (C == null)
                     {

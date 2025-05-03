@@ -30,7 +30,7 @@ namespace WindowsFormsBiblioteca.Classes
             [StringLength(50, ErrorMessage = "Nome da Mãe deve ter no máximo 50 caracteres.")]
             public string NomeMae { get; set; }
 
-            public bool NaoTemPai { get; set; }
+            public int NaoTemPai { get; set; }
 
             [Required(ErrorMessage = "CPF é obrigatório.")]
             [RegularExpression(@"^\d+$", ErrorMessage = "CPF somente aceita valores numéricos.")]
@@ -102,7 +102,7 @@ namespace WindowsFormsBiblioteca.Classes
                     throw new Exception("nome do Pai e da Mãe não podem ser iguais.");
                 }
 
-                if (this.NaoTemPai == false)
+                if (this.NaoTemPai == 0)
                 {
                     if (this.NomePai == "")
                     {
@@ -174,14 +174,14 @@ namespace WindowsFormsBiblioteca.Classes
                 string SQL;
 
                 SQL = @"UPDATE TB_Cliente
-                        SET";
+                        SET ";
                 SQL += "Id = '" + this.Id + "', ";
                 SQL += "Nome = '" + this.Nome + "', ";
                 SQL += "NomePai = '" + this.NomePai + "', ";
                 SQL += "NomeMae = '" + this.NomeMae + "', ";
-                SQL += "NaoTemPai = " + Convert.ToString(this.NaoTemPai) + ",";
+                SQL += "NaoTemPai = " + Convert.ToString(this.NaoTemPai) + ", ";
                 SQL += "Cpf = '" + this.Cpf + "', ";
-                SQL += "Genero = " + Convert.ToString(this.Genero) + "'";
+                SQL += "Genero = " + Convert.ToString(this.Genero) + ", ";
                 SQL += "Cep = '" + this.Cep + "', ";
                 SQL += "Logradouro = '" + this.Logradouro + "', ";
                 SQL += "Complemento = '" + this.Complemento + "', ";
@@ -191,7 +191,7 @@ namespace WindowsFormsBiblioteca.Classes
                 SQL += "Telefone = '" + this.Telefone + "', ";
                 SQL += "Profissao = '" + this.Profissao + "', ";
                 SQL += "RendaFamiliar = " + Convert.ToDouble(this.RendaFamiliar);
-                SQL += "WHERE Id = '" + this.Id + "';";
+                SQL += " WHERE Id = '" + this.Id + "';";
 
                 return SQL;
             }
@@ -204,7 +204,7 @@ namespace WindowsFormsBiblioteca.Classes
                 u.Nome = dr["Nome"].ToString();
                 u.NomePai = dr["NomePai"].ToString();
                 u.NomeMae = dr["NomeMae"].ToString();
-                u.NaoTemPai = Convert.ToBoolean(dr["NaoTemPai"]);
+                u.NaoTemPai = Convert.ToInt32(dr["NaoTemPai"]);
                 u.Cpf = dr["Cpf"].ToString();
                 u.Genero = Convert.ToInt32(dr["Genero"]);
                 u.Cep = dr["Cep"].ToString();
@@ -222,109 +222,123 @@ namespace WindowsFormsBiblioteca.Classes
 
             #endregion
 
-            public void IncluirFicharioSQL(string Conexao)
+            public void IncluirFicharioSQLREL()
             {
-                string clienteJson = Cliente.SerializedClassUnit(this);
-                FicharioSQLServer F = new FicharioSQLServer(Conexao);
-
-                if (F.status)
+                try
                 {
-                    F.Incluir(this.Id, clienteJson);
+                    string SQL;
+                    SQL = this.ToInsert();
 
-                    if(!(F.status))
-                    {
-                        throw new Exception(F.mensagem);
-                    }
+                    var db = new SQLServeClass();
+                    db.SQLCommand(SQL);
+                    db.Close();
                 }
-                else
+                catch(Exception ex)
                 {
-                    throw new Exception(F.mensagem);
+                    throw new Exception("Inlucsão não permitida. Identificador: " + this.Id + ", erro: " + ex.Message);
                 }
             }
 
-            public Unit BuscarFicharioSQL(string id, string conexao)
+            public Unit BuscarFicharioSQLREL(string Id)
             {
-                FicharioSQLServer F = new FicharioSQLServer(conexao);
-
-                if (F.status)
+                try
                 {
-                    string clienteJson = F.Buscar(id);
+                    string SQL = "SELECT * FROM TB_Cliente WHERE Id = '" + Id + "'";
 
-                    return Cliente.DesSerializedClassUnit(clienteJson);
-                }
-                else
-                {
-                    throw new Exception(F.mensagem);
-                }
-            }
+                    var db = new SQLServeClass();
+                    var dt = db.SQLQuery(SQL);
 
-            public void AlterarFicharioSQL(string conexao)
-            {
-                string clienteJson = Cliente.SerializedClassUnit(this);
-                FicharioSQLServer F = new FicharioSQLServer(conexao);
-
-                if (F.status)
-                {
-                    F.Alterar(this.Id, clienteJson);
-
-                    if (!(F.status))
+                    if (dt.Rows.Count == 0)
                     {
-                        throw new Exception(F.mensagem);
-                    }
-                }
-                else
-                {
-                    throw new Exception(F.mensagem);
-                }
-            }
-
-            public void ApagarFicharioSQL(string conexao)
-            {
-                FicharioSQLServer F = new FicharioSQLServer(conexao);
-
-                if (F.status)
-                {
-                    F.Apagar(this.Id);
-
-                    if(!(F.status))
-                    {
-                        throw new Exception(F.mensagem);
-                    }
-                }
-                else
-                {
-                    throw new Exception(F.mensagem);
-                }
-            }
-            public List<List<string>> BuscarFicharioDBTodosSQL(string conexao)
-            {
-                FicharioSQLServer F = new FicharioSQLServer(conexao);
-
-                if (F.status)
-                {
-                    List<string> List = new List<string>();
-                    List = F.BuscarTodos();
-
-                    if (F.status)
-                    {
-                        List<List<string>> ListaBusca = new List<List<string>>();
-
-                        for (int i = 0; i <= List.Count - 1; i++)
-                        {
-                            Cliente.Unit C = Cliente.DesSerializedClassUnit(List[i]);
-                            ListaBusca.Add(new List<string> { C.Id, C.Nome });
-                        }
-
-                        return ListaBusca;
+                        db.Close();
+                        throw new Exception("Identificador não existe: " + Id);
                     }
                     else
                     {
-                        throw new Exception(F.mensagem);
+                        Unit u = this.DataRowToUnit(dt.Rows[0]);
+                        return u;
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    throw new Exception(F.mensagem);
+                    throw new Exception("Erro ao buscar o conteúdo do identificador: " + Id + ", erro: " + ex.Message);
+                }
+            }
+
+            public void AlterarFicharioSQLREL()
+            {
+                try
+                {
+                    string SQL = "SELECT * FROM TB_Cliente WHERE Id = '" + Id + "'";
+
+                    var db = new SQLServeClass();
+                    var dt = db.SQLQuery(SQL);
+
+                    if (dt.Rows.Count == 0)
+                    {
+                        db.Close();
+                        throw new Exception("Identificador não existe: " + Id);
+                    }
+                    else
+                    {
+                        SQL = this.ToUpdate(this.Id);
+                        db.SQLCommand(SQL);
+                        db.Close();
+                    }
+                }
+                catch (Exception ex) 
+                { 
+                    throw new Exception("Erro ao alterar o conteúdo do identificador: " + Id + ", erro: " + ex.Message);
+                }
+            }
+
+            public void ApagarFicharioSQLREL(string conexao)
+            {
+                try
+                {
+                    string SQL = "SELECT * FROM TB_Cliente WHERE Id = '" + this.Id + "'";
+
+                    var db = new SQLServeClass();
+                    var dt = db.SQLQuery(SQL);
+
+                    if (dt.Rows.Count == 0)
+                    {
+                        db.Close();
+                        throw new Exception("Indentificador não existe: " + this.Id);
+                    }
+                    else
+                    {
+                        SQL = "DELETE FROM TB_cliente WHERE Id = '" + this.Id + "'";
+                        db.SQLCommand(SQL);
+                        db.Close() ;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Erro ao apagar o conteúdo do identificador: " + Id + ", erro: " + ex.Message);
+                }
+            }
+            public List<List<string>> BuscarFicharioDBTodosSQLREL(string conexao)
+            {
+                List<List<string>> ListaBusca = new List<List<string>>();
+
+                try
+                {
+                    var SQL = "SELECT * FROM TB_Cliente";
+
+                    var db = new SQLServeClass();
+                    var dt = db.SQLQuery(SQL);
+
+                    for (int i = 0; i <= dt.Rows.Count - 1; i++)
+                    {
+                        ListaBusca.Add(new List<string> { dt.Rows[i]["Id"].ToString(), dt.Rows[i]["Nome"].ToString() });
+                    }
+
+                    return ListaBusca;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Conexão com a base ocasionou um erro: " + ex.Message);
                 }
             }
 
