@@ -27,11 +27,22 @@ namespace WindowsForms.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
         [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\carlo\\source\\repos\\W" +
-            "indowsForms_2.0\\WindowsFormsBiblioteca\\Databases\\Fichario.mdf;Integrated Securit" +
+            "indowsForms_4.0\\WindowsFormsBiblioteca\\Databases\\Fichario.mdf;Integrated Securit" +
             "y=True")]
         public string FicharioConnectionString {
             get {
                 return ((string)(this["FicharioConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=CARLOS;Initial Catalog=ByteBank;Persist Security Info=True;User ID=sa" +
+            ";Password=sa;Encrypt=False")]
+        public string ByteBankConnectionString {
+            get {
+                return ((string)(this["ByteBankConnectionString"]));
             }
         }
     }

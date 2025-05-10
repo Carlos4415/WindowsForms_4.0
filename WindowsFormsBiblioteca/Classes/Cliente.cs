@@ -318,7 +318,7 @@ namespace WindowsFormsBiblioteca.Classes
                     throw new Exception("Erro ao apagar o conteúdo do identificador: " + Id + ", erro: " + ex.Message);
                 }
             }
-            public List<List<string>> BuscarFicharioDBTodosSQLREL(string conexao)
+            public List<List<string>> BuscarFicharioDBTodosSQLREL()
             {
                 List<List<string>> ListaBusca = new List<List<string>>();
 

@@ -82,6 +82,9 @@ namespace WindowsForms.Formularios
             Tls_Principal.Items[2].ToolTipText = "Atualize o cliente já cadastrado";
             Tls_Principal.Items[3].ToolTipText = "Apaga o cliente selecionado";
             Tls_Principal.Items[4].ToolTipText = "Limpa dados da tela de entrada de dados";
+
+            AtualizaGrid();
+            LimparFormulario();
         }
 
         private void Chk_TemPai_CheckedChanged(object sender, EventArgs e)
@@ -106,6 +109,7 @@ namespace WindowsForms.Formularios
                 C.ValidaComplemento();
                 C.IncluirFicharioSQLREL();
                 MessageBox.Show("OK: Identificador incluido com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                AtualizaGrid();
             }
             catch (ValidationException Ex)
             {
@@ -162,6 +166,7 @@ namespace WindowsForms.Formularios
                     C.ValidaComplemento();
                     C.AlterarFicharioSQLREL();
                     MessageBox.Show("OK: Identificador alterado com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    AtualizaGrid();
                 }
                 catch (ValidationException Ex)
                 {
@@ -203,6 +208,7 @@ namespace WindowsForms.Formularios
                             C.ApagarFicharioSQLREL("Cliente");
 
                             MessageBox.Show("OK: Identificador apagado com sucesso", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            AtualizaGrid();
                             LimparFormulario();
                         }
                     }
@@ -409,7 +415,7 @@ namespace WindowsForms.Formularios
             {
                 Cliente.Unit C = new Cliente.Unit();
 
-                var ListaBusca = C.BuscarFicharioDBTodosSQLREL("Cliente");
+                var ListaBusca = C.BuscarFicharioDBTodosSQLREL();
                 Frm_Busca FForm = new Frm_Busca(ListaBusca);
                 FForm.ShowDialog();
 
@@ -432,6 +438,56 @@ namespace WindowsForms.Formularios
             catch (Exception Ex)
             {
                 MessageBox.Show(Ex.Message, "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AtualizaGrid()
+        {
+            try
+            {
+                Cliente.Unit C = new Cliente.Unit();
+                var ListaBusca = C.BuscarFicharioDBTodosSQLREL();
+
+                Dg_Clientes.Rows.Clear();
+
+                for (int i = 0; i <= ListaBusca.Count - 1; i++)
+                {
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.CreateCells(Dg_Clientes);
+                    row.Cells[0].Value = ListaBusca[i][0].ToString();
+                    row.Cells[1].Value = ListaBusca[i][1].ToString();
+                    Dg_Clientes.Rows.Add(row);
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message, "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void Dg_Clientes_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                DataGridViewRow row = new DataGridViewRow();
+                row = Dg_Clientes.SelectedRows[0];
+                string Id = row.Cells[0].Value.ToString();
+
+                Cliente.Unit C = new Cliente.Unit();
+                C = C.BuscarFicharioSQLREL(Id);
+
+                if (C == null)
+                {
+                    MessageBox.Show("Identificador não encontrado.", "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    EscreveFormulario(C);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ByteBank", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
